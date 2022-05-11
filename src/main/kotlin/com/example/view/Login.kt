@@ -2,48 +2,52 @@ package com.example.view
 
 import com.example.Styles
 import javafx.beans.InvalidationListener
+import javafx.beans.Observable
 import javafx.beans.property.SimpleStringProperty
+import javafx.geometry.Insets
 import javafx.geometry.Pos
+import javafx.scene.image.Image
 import tornadofx.*
+import javax.xml.bind.Marshaller.Listener
 
 class Login : View("Login") {
+    private val usrId = SimpleStringProperty()
+    private val password = SimpleStringProperty()
     override val root = borderpane {
+        paddingAll = 20
         center = form {
-            val usrId = SimpleStringProperty()
-            val password = SimpleStringProperty()
             hbox(alignment=Pos.CENTER) {
                 fieldset("Login") {
                     addClass(Styles.headingMain)
                     textfield(usrId) {
-                        val usrLabel = label("Username/Email")
-                        this@textfield.textProperty().addListener(
-                            InvalidationListener {
-                                usrLabel.setText("")
-                            }
-                        )
+                        promptText = "Username/Email"
                     }
                     passwordfield(password) {
-                        val passwdLabel = label("Password")
-                        this@passwordfield.textProperty().addListener(
-                            InvalidationListener {
-                                passwdLabel.setText("")
-                            }
-                        )
-                    }
-                    button("Log in") {
-                        addClass(Styles.secondaryButton)
-                        action {
-                            println("LOGIN")
-                        }
+                        promptText = "Password"
                     }
                 }
             }
         }
-        bottom = button("Back") {
+        left = button("Back") {
+            this@button.alignment = Pos.BOTTOM_LEFT
             addClass(Styles.exitButton)
             action {
                 this@Login.replaceWith(MainView::class)
             }
         }
+        bottom = hbox (alignment = Pos.BOTTOM_CENTER) {
+            button {
+                alignment = Pos.BOTTOM_CENTER
+                this@button.isDefaultButton = true
+                run {
+                    graphic = imageview("file:./src/main/Simplifile-Assets/login-screen/buttons-png/proceed.png", lazyload = false)
+                }
+                action {
+                    println("USR_LOG_S")
+                    this@Login.replaceWith(StoragePage::class)
+                }
+            }
+        }
+
     }
 }

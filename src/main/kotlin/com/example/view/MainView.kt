@@ -24,6 +24,7 @@ class MainView : View("Simplfile") {
 
                     button("Log in") {
                         addClass(Styles.secondaryButton)
+                        this@button.isDefaultButton = true
                         action {
                             println("USR_LOG")
                             this@MainView.replaceWith(Login::class)
