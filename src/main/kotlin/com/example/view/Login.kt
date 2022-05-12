@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.image.Image
+import javafx.scene.paint.Color
 import tornadofx.*
 import javax.xml.bind.Marshaller.Listener
 
@@ -18,36 +19,42 @@ class Login : View("Login") {
         center = form {
             hbox(alignment=Pos.CENTER) {
                 fieldset("Login") {
-                    addClass(Styles.headingMain)
+                    addClass(Styles.sectionHeading)
                     textfield(usrId) {
+                        addClass(Styles.searchLabel)
                         promptText = "Username/Email"
                     }
                     passwordfield(password) {
+                        addClass(Styles.searchLabel)
                         promptText = "Password"
                     }
                 }
             }
         }
-        left = button("Back") {
-            this@button.alignment = Pos.BOTTOM_LEFT
-            addClass(Styles.exitButton)
-            action {
-                this@Login.replaceWith(MainView::class)
-            }
+        left = vbox {
+            alignment = Pos.BOTTOM_LEFT
         }
-        bottom = hbox (alignment = Pos.BOTTOM_CENTER) {
-            button {
+        bottom = borderpane {
+            left = button {
+                alignment = Pos.BOTTOM_LEFT
+                addClass(Styles.darkerButton)
+                graphic = imageview("file:./src/main/Simplifile-Assets/general-assets/buttons-png/back.png")
+                action {
+                    this@Login.replaceWith(MainView::class)
+                }
+            }
+            center = button {
+                addClass(Styles.darkerButton)
                 alignment = Pos.BOTTOM_CENTER
                 this@button.isDefaultButton = true
-                run {
-                    graphic = imageview("file:./src/main/Simplifile-Assets/login-screen/buttons-png/proceed.png", lazyload = false)
-                }
+                graphic = imageview("file:./src/main/Simplifile-Assets/login-screen/buttons-png/proceed.png")
                 action {
                     println("USR_LOG_S")
                     this@Login.replaceWith(StoragePage::class)
                 }
             }
         }
+
 
     }
 }

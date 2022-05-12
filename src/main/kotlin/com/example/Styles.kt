@@ -2,13 +2,11 @@ package com.example
 
 import javafx.geometry.HPos
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
-import tornadofx.Stylesheet
-import tornadofx.box
-import tornadofx.cssclass
-import tornadofx.px
+import tornadofx.*
 
 class Styles : Stylesheet() {
     companion object {
@@ -20,6 +18,7 @@ class Styles : Stylesheet() {
         val mainButton by cssclass()
         val secondaryButton by cssclass()
         val exitButton by cssclass()
+        val darkerButton by cssclass()
     }
 
     init {
@@ -71,6 +70,10 @@ class Styles : Stylesheet() {
             fontFamily = "Source Sans Variable"
             fontSize = 58.px
             fontWeight = FontWeight.SEMI_BOLD
+        }
+
+        button and darkerButton {
+            backgroundColor += Color.TRANSPARENT
         }
     }
 }

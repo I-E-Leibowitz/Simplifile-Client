@@ -6,12 +6,15 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.Parent
 import tornadofx.*
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
+import javafx.scene.web.PromptData
 
+@Suppress("RedundantIf")
 class Signup : View("Register") {
     private var username = SimpleStringProperty()
     private var email = SimpleStringProperty()
     private var password = SimpleStringProperty()
-    private var passwordVerify = SimpleStringProperty()
+    private var passwordVerify = SimpleStringProperty("")
     override var root = borderpane {
         center = form {
             fieldset {
@@ -19,36 +22,37 @@ class Signup : View("Register") {
                     fieldset("Sign Up") {
                         addClass(Styles.headingMain)
                         textfield(username) {
-                            val assistLabel = label("username")
-                            this@textfield.textProperty().addListener(
-                                InvalidationListener {
-                                    assistLabel.setText("")
-                                }
-                            )
+                            addClass(Styles.searchLabel)
+                            promptText = "Username"
                         }
                         textfield(email) {
-                            val assistLabel = label("email")
-                            this@textfield.textProperty().addListener(
-                                InvalidationListener {
-                                    assistLabel.setText("")
-                                }
-                            )
+                            addClass(Styles.searchLabel)
+                            promptText = "Email (example@test.com)"
                         }
                         passwordfield(password) {
-                            val assistLabel = label("password")
-                            this@passwordfield.textProperty().addListener(
-                                InvalidationListener {
-                                    assistLabel.setText("")
-                                }
-                            )
+                            addClass(Styles.searchLabel)
+                            promptText = "Password"
                         }
                         passwordfield(passwordVerify) {
-                            val assistLabel = label("verify password")
-                            this@passwordfield.textProperty().addListener(
-                                InvalidationListener {
-                                    assistLabel.setText("")
+                            addClass(Styles.searchLabel)
+                            promptText = "Verify Password"
+                            action {
+                                if(passwordVerify != password) {
+                                    this@passwordfield.styleClass.add("Error")
+
                                 }
-                            )
+                                else {
+                                    this@passwordfield.styleClass.remove("Error")
+                                }
+                            }
+                        }
+                        label("Passwords do not match.") {
+                            isVisible = false
+                            runAsync {
+                                while(true) {
+                                    isVisible = ((passwordVerify.value != "") && (password.value != passwordVerify.value))
+                                }
+                            }
                         }
                     }
                 }
