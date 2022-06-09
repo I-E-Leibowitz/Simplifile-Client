@@ -15,10 +15,13 @@ class Signup : View("Register") {
     private var email = SimpleStringProperty()
     private var password = SimpleStringProperty()
     private var passwordVerify = SimpleStringProperty("")
+    override fun onDock() {
+
+    }
     override var root = borderpane {
         center = form {
-            fieldset {
-                hbox(alignment=Pos.CENTER) {
+            vbox(alignment=Pos.CENTER) {
+                hbox(alignment = Pos.CENTER) {
                     fieldset("Sign Up") {
                         addClass(Styles.headingMain)
                         textfield(username) {
@@ -37,11 +40,10 @@ class Signup : View("Register") {
                             addClass(Styles.searchLabel)
                             promptText = "Verify Password"
                             action {
-                                if(passwordVerify != password) {
+                                if (passwordVerify != password) {
                                     this@passwordfield.styleClass.add("Error")
 
-                                }
-                                else {
+                                } else {
                                     this@passwordfield.styleClass.remove("Error")
                                 }
                             }
@@ -49,28 +51,37 @@ class Signup : View("Register") {
                         label("Passwords do not match.") {
                             isVisible = false
                             runAsync {
-                                while(true) {
-                                    isVisible = ((passwordVerify.value != "") && (password.value != passwordVerify.value))
+                                while (true) {
+                                    isVisible =
+                                        ((passwordVerify.value != "") && (password.value != passwordVerify.value))
                                 }
                             }
                         }
                     }
                 }
+                button {
+                    alignment = Pos.BOTTOM_LEFT
+                    addClass(Styles.mainButton)
+                    text="Register"
+                    action {
+                        this@Signup.replaceWith(StoragePage::class)
+                    }
+                }
             }
+
         }
 
         bottom = button("Back") {
-            addClass(Styles.exitButton)
-            action {
-                println("BACK")
-                username.value = ""
-                email.value = ""
-                password.value = ""
-                passwordVerify.value = ""
-                this@Signup.replaceWith(MainView::class)
+                addClass(Styles.exitButton)
+                action {
+                    println("BACK")
+                    username.value = ""
+                    email.value = ""
+                    password.value = ""
+                    passwordVerify.value = ""
+                    this@Signup.replaceWith(MainView::class)
+                }
             }
         }
 
     }
-
-}

@@ -3,9 +3,13 @@ package com.example.view
 import com.example.Styles
 import javafx.application.Platform
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
 import tornadofx.*
 
 class MainView : View("Simplfile") {
+    override fun onDock() {
+
+    }
     override val root = borderpane {
         center = form {
             fieldset {

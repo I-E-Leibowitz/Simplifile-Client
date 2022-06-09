@@ -9,11 +9,17 @@ import javafx.geometry.Pos
 import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import tornadofx.*
-import javax.xml.bind.Marshaller.Listener
+import java.net.Socket
+import java.net.ConnectException
+import java.io.PrintWriter
+import java.io.BufferedReader
+
+
 
 class Login : View("Login") {
     private val usrId = SimpleStringProperty()
     private val password = SimpleStringProperty()
+    private val breakValue = 0x04
     override val root = borderpane {
         paddingAll = 20
         center = form {
@@ -50,11 +56,22 @@ class Login : View("Login") {
                 graphic = imageview("file:./src/main/Simplifile-Assets/login-screen/buttons-png/proceed.png")
                 action {
                     println("USR_LOG_S")
+                    validateLogin()
                     this@Login.replaceWith(StoragePage::class)
                 }
             }
         }
 
 
+    }
+    private fun validateLogin(): Boolean {
+        return try {
+            val client = Socket("localhost", 55445)
+            client.getOutputStream().write("command: uvalidate\nid: 5\nusername: $usrId\npassword: $password$breakValue".toByteArray())
+            true
+        } catch(e: ConnectException){
+            println("Uh oh, something's gone wrong!")
+            false
+        }
     }
 }

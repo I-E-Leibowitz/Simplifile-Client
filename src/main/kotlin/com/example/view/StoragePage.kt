@@ -1,6 +1,7 @@
 package com.example.view
 
 import com.example.MyApp
+import com.example.JsonDataClass
 import javafx.geometry.Pos
 import javafx.geometry.Side
 import javafx.scene.image.Image
@@ -14,25 +15,20 @@ import com.example.NewFileEvent
 import com.example.NewFileLoaded
 import com.example.Styles
 import javafx.scene.control.Button
+import javafx.scene.control.ContextMenu
+import javafx.scene.control.MenuItem
 import javafx.scene.paint.Color
 
 class StoragePage : View("Storage") {
     private var position = 0
     private var files: MutableList<Button> = mutableListOf()
-    private val newButton = button {
-        alignment = Pos.TOP_CENTER
-        addClass(Styles.darkerButton)
-        graphic = imageview("file:./src/main/Simplifile-Assets/storage-screen/buttons-png/file-icon.png")
-        action {
-            this@button.removeFromParent()
-        }
-    }
     private val backgroundImage = BackgroundImage (
         Image("file:./src/main/Simplifile-Assets/storage-screen/background.png"),
         BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT,
         BackgroundPosition(Side.LEFT, 0.0 , true, Side.BOTTOM, 0.0, true),
         BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true)
         )
+
     override val root = borderpane {
 
         top = vbox(alignment=Pos.TOP_CENTER) {
@@ -44,7 +40,12 @@ class StoragePage : View("Storage") {
                     val file = FileChooser()
                     val selectedFile = file.showOpenDialog(currentStage)
                     println(selectedFile)
-                    fire(NewFileEvent(selectedFile.path))
+                    try {
+                        fire(NewFileEvent(selectedFile.name))
+                    }
+                    catch (e: Exception){
+                        println(e)
+                    }
                 }
             }
             hbox (alignment=Pos.TOP_RIGHT) {
@@ -68,7 +69,7 @@ class StoragePage : View("Storage") {
                     addClass(Styles.darkerButton)
                     graphic = imageview("file:./src/main/Simplifile-Assets/general-assets/buttons-png/favourites.png")
                     action {
-                        println("FAVS")
+                        this@StoragePage.replaceWith(Favourites::class)
                     }
                 }
                 button {
@@ -76,6 +77,7 @@ class StoragePage : View("Storage") {
                     graphic = imageview("file:./src/main/Simplifile-Assets/general-assets/buttons-png/settings.png")
                     action {
                         println("SETS")
+                        this@StoragePage.replaceWith(Settings::class)
                     }
                 }
             }
@@ -94,10 +96,28 @@ class StoragePage : View("Storage") {
         center = scrollpane {
             gridpane {
                 subscribe<NewFileEvent> { event ->
-                    newButton.text = event.file
-                    files.add(newButton)
-                    this@gridpane.add(newButton, position, (position/5).toInt())
-                    position += 1
+                    val tempButton = button {
+                        alignment = Pos.TOP_CENTER
+                        addClass(Styles.darkerButton)
+                        graphic =
+                            imageview("file:./src/main/Simplifile-Assets/storage-screen/buttons-png/file-icon.png")
+                        action {
+                            this@button.removeFromParent()
+                        }
+                        contextmenu {
+                            item("Favourite").action {
+                                val json = JsonDataClass()
+                                json.id = position
+                                position++
+                                json.file = this@button.text
+                                json.toJSON()
+                            }
+                        }
+                    }
+                    tempButton.text = event.file
+                    files.add(tempButton)
+                    println(files.size)
+                    this@gridpane.add(tempButton, files.size - 5 * (files.size/5).toInt(), (files.size/5).toInt())
                 }
             }
         }
